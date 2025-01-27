@@ -1,0 +1,34 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, render } from "astro:content"; //Importamos getCollection para obtener la colección de libros y render para renderizar el contenido de la colección
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const books = await getCollection("books"); //Recuperamos la colección de libros
+
+  return books.map((book) => ({
+    //Mapeamos los libros para obtener los slugs
+    params: { id: book.slug }, //Pasamos el slug como parámetro
+    props: { book }, //Pasamos el libro como prop y nos traemos toda la información del libro
+  }));
+}
+
+const { book } = Astro.props; //Recuperamos el libro que pasamos como prop en getStaticPaths
+const { data , slug } = book; //Extraemos la información del libro
+const { title, author, img, readtime, description, buy } = data; //Extraemos la información del libro para mostrarla en la página
+const { Content } = await render(book); //Renderizamos el contenido del libro
+---
+
+<Layout title=`${title} - Dev Books`>
+  <div class="flex gap-12">
+    <aside class="flex flex-col items-center gap-4">
+      <img transition:name={`img-${slug}`} class="rounded w-72 h-auto" src={`/${img}`} alt={title} /> <!-- Agregamos una transición a la imagen asociando el nombre de la transición con el slug del libro que viene del index -->
+    </aside>
+    <main class="max-w-3xl">
+      <h1 class="font-bold text-4xl mb-4">{title}</h1>
+      <div class="prose prose-invert"> //Usamos la clase prose-invert para invertir los colores del texto. Este parametro viene de Tailwind CSS Typography
+        <Content />
+      </div>
+    </main>
+  </div>
+</Layout>
