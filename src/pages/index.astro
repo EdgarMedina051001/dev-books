@@ -4,6 +4,8 @@ import { getCollection } from "astro:content";
 
 const books = await getCollection("books");
 console.log(books);
+
+export const prerender = true //Indecamos que está pagina se tiene que prerendizar.
 ---
 
 <Layout title="Dev Books">
@@ -33,7 +35,7 @@ console.log(books);
                     /> <!-- Agregamos una transición a la imagen -->
                   </a>
                   <div>
-                    <h2 class="text-2xl font-bold leading-tight text-white">
+                    <h2 class="text-2xl font-bold leading-tight text-white" transition:name={`title-${slug}`}>
                       {title}
                     </h2>
                     <p class="text-lg text-gray-400 mb-2">{author}</p>
